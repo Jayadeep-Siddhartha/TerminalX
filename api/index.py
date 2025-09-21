@@ -15,11 +15,7 @@ def normalize_cwd(cwd: str) -> str:
     return os.path.normpath(cwd)
 
 def map_command(cmd: str, cwd: str):
-    """
-    Map common Linux commands to Python equivalents
-    for cross-platform compatibility.
-    Returns (output, error) if handled, otherwise (None, None)
-    """
+    """Map common Linux commands to Python equivalents."""
     cmd = cmd.strip()
     if cmd == "pwd":
         return cwd + "\n", ""
@@ -31,11 +27,10 @@ def map_command(cmd: str, cwd: str):
             return "", str(e)
     if cmd.startswith("echo "):
         return cmd[5:] + "\n", ""
-    # Add more commands if needed
     return None, None
 
 def run_command(cmd: str, cwd: str) -> subprocess.CompletedProcess:
-    """Run the command using subprocess (Linux compatible)."""
+    """Run the command using subprocess."""
     return subprocess.run(
         cmd,
         shell=True,
@@ -56,7 +51,6 @@ def execute_command():
         return jsonify({'output': '', 'error': 'No command provided'}), 400
 
     try:
-        # Handle 'cd' separately
         if command.strip().startswith('cd '):
             new_dir_path = command.strip().split(' ', 1)[1]
             if new_dir_path.startswith('~'):
@@ -70,23 +64,12 @@ def execute_command():
                 error_msg = f"cd: no such file or directory: {new_dir_path}"
                 return jsonify({'output': '', 'error': error_msg, 'new_cwd': cwd})
 
-        # Check if command can be handled by Python
         output, error = map_command(command, cwd)
         if output is not None:
-            return jsonify({
-                'output': output,
-                'error': error,
-                'new_cwd': cwd
-            })
+            return jsonify({'output': output, 'error': error, 'new_cwd': cwd})
 
-        # Fallback to subprocess for other commands
         result = run_command(command, cwd)
-
-        return jsonify({
-            'output': result.stdout,
-            'error': result.stderr,
-            'new_cwd': cwd
-        })
+        return jsonify({'output': result.stdout, 'error': result.stderr, 'new_cwd': cwd})
 
     except subprocess.TimeoutExpired:
         return jsonify({'output': '', 'error': 'Command timed out', 'new_cwd': cwd}), 500
@@ -121,5 +104,8 @@ def autocomplete():
 
     return jsonify(suggestions)
 
+# --- Run app ---
 if __name__ == '__main__':
-    app.run(port=5353)
+    import os
+    port = int(os.environ.get("PORT", 5353))  # Use Render's port or default 5353
+    app.run(host="0.0.0.0", port=port)

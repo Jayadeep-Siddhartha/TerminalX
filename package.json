@@ -1,0 +1,23 @@
+{
+  "name": "aa29eeb6-f61b-47ec-9b92-eb23df01c84e",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "daisyui": "^5.0.43",
+    "lucide-react": "^0.525.0",
+    "next": "15.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "framer-motion": "^12.23.16"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4"
+  }
+}
